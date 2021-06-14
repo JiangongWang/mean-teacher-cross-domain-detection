@@ -122,7 +122,8 @@ core*
 *.png
 *.jpg
 *.jpeg
-output
+outputs
 crop/
 
 datasets
+models*

@@ -37,6 +37,7 @@ class COCODetection(VisionDataset):
         Whether use boxes labeled as crowd instance.
 
     """
+    """
     CLASSES = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train',
                'truck', 'boat', 'traffic light', 'fire hydrant', 'stop sign',
                'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep',
@@ -50,9 +51,10 @@ class COCODetection(VisionDataset):
                'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave',
                'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase',
                'scissors', 'teddy bear', 'hair drier', 'toothbrush']
+    """
 
     def __init__(self, root=os.path.join('~', '.mxnet', 'datasets', 'coco'),
-                 splits=('instances_val2017',), transform=None, min_object_area=0,
+                 splits=('instances_val2017',), classes= 'car', transform=None, min_object_area=0,
                  skip_empty=True, use_crowd=True):
         super(COCODetection, self).__init__(root)
         self._root = os.path.expanduser(root)
@@ -64,7 +66,8 @@ class COCODetection(VisionDataset):
             splits = [splits]
         self._splits = splits
         # to avoid trouble, we always use contiguous IDs except dealing with cocoapi
-        self.index_map = dict(zip(type(self).CLASSES, range(self.num_class)))
+        # self.index_map = dict(zip(type(self).CLASSES, range(self.num_class)))
+        self._classes = classes.split(',')
         self.json_id_to_contiguous = None
         self.contiguous_id_to_json = None
         self._coco = []
@@ -87,7 +90,7 @@ class COCODetection(VisionDataset):
     @property
     def classes(self):
         """Category names."""
-        return type(self).CLASSES
+        return self._classes
 
     def __len__(self):
         return len(self._items)
@@ -112,9 +115,9 @@ class COCODetection(VisionDataset):
             _coco = COCO(anno)
             self._coco.append(_coco)
             classes = [c['name'] for c in _coco.loadCats(_coco.getCatIds())]
-            if not classes == self.classes:
+            if not classes == self._classes:
                 raise ValueError("Incompatible category names with COCO: ")
-            assert classes == self.classes
+            assert classes == self._classes
             json_id_to_contiguous = {
                 v: k for k, v in enumerate(_coco.getCatIds())}
             if self.json_id_to_contiguous is None:
@@ -127,7 +130,9 @@ class COCODetection(VisionDataset):
             # iterate through the annotations
             image_ids = sorted(_coco.getImgIds())
             for entry in _coco.loadImgs(image_ids):
-                dirname, filename = entry['coco_url'].split('/')[-2:]
+                # dirname, filename = entry['coco_url'].split('/')[-2:]
+                dirname = self._splits[0].split('_')[-1]
+                filename = entry['file_name']
                 abs_path = os.path.join(self._root, dirname, filename)
                 if not os.path.exists(abs_path):
                     raise IOError('Image: {} not exists.'.format(abs_path))
@@ -140,8 +145,8 @@ class COCODetection(VisionDataset):
 
     def _check_load_bbox(self, coco, entry):
         """Check and load ground-truth labels"""
-        ann_ids = coco.getAnnIds(imgIds=entry['id'], iscrowd=None)
-        objs = coco.loadAnns(ann_ids)
+        # ann_ids = coco.getAnnIds(imgIds=entry['id'], iscrowd=None)
+        objs = coco.imgToAnns[entry['id']]
         # check valid bboxes
         valid_objs = []
         width = entry['width']

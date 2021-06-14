@@ -359,10 +359,11 @@ def get_dataset(dataset, args):
             target_dataset = None
         val_metric = VOC07MApMetric(iou_thresh=0.5, class_names=val_dataset.classes)
     elif dataset.lower() == 'coco':
-        train_dataset = gdata.COCODetection(splits='instances_train2017', use_crowd=False)
-        val_dataset = gdata.COCODetection(splits='instances_val2017', skip_empty=False)
+        train_dataset = gdata.COCODetection(root=args.train_root, splits='instances_train2017', classes = args.classes, use_crowd=False)
+        val_dataset = gdata.COCODetection(root=args.val_root, splits='instances_val2017', classes = args.classes, skip_empty=False)
+        target_dataset = gdata.COCODetection(root=args.target_root, splits='instances_train2017', classes = args.classes, use_crowd=False)
         val_metric = COCODetectionMetric(val_dataset, args.save_prefix + '_eval', cleanup=True)
-        target_dataset = None
+        # target_dataset = None
     else:
         raise NotImplementedError('Dataset: {} not implemented.'.format(dataset))
     return train_dataset, val_dataset, target_dataset, val_metric
