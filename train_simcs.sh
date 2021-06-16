@@ -23,10 +23,10 @@ python scripts/detection/faster_rcnn/train_faster_rcnn_se.py \
 --train_split sim10k_trainval.txt \
 --val_split cityscape_val.txt \
 --target_split cityscape_train.txt \
---min_dataset_size 3000 \
+--min_dataset_size 9975 \
 --num-workers 8 \
 --gpus 0 \
---epochs 64 \
+--epochs 16 \
 --start-epoch 0 \
 --lr-decay 0.1 \
 --lr-decay-epoch 4,6 \

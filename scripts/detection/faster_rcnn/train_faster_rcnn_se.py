@@ -359,9 +359,9 @@ def get_dataset(dataset, args):
             target_dataset = None
         val_metric = VOC07MApMetric(iou_thresh=0.5, class_names=val_dataset.classes)
     elif dataset.lower() == 'coco':
-        train_dataset = gdata.COCODetection(root=args.train_root, splits='instances_train2017', classes = args.classes, use_crowd=False)
+        train_dataset = gdata.COCODetection(root=args.train_root, splits='instances_train2017', classes = args.classes, use_crowd=False, min_dataset_size = args.min_dataset_size)
         val_dataset = gdata.COCODetection(root=args.val_root, splits='instances_val2017', classes = args.classes, skip_empty=False)
-        target_dataset = gdata.COCODetection(root=args.target_root, splits='instances_train2017', classes = args.classes, use_crowd=False)
+        target_dataset = gdata.COCODetection(root=args.target_root, splits='instances_train2017', classes = args.classes, use_crowd=False, min_dataset_size = args.min_dataset_size)
         val_metric = COCODetectionMetric(val_dataset, args.save_prefix + '_eval', cleanup=True)
         # target_dataset = None
     else:

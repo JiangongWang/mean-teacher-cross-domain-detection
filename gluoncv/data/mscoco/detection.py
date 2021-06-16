@@ -55,13 +55,14 @@ class COCODetection(VisionDataset):
 
     def __init__(self, root=os.path.join('~', '.mxnet', 'datasets', 'coco'),
                  splits=('instances_val2017',), classes= 'car', transform=None, min_object_area=0,
-                 skip_empty=True, use_crowd=True):
+                 skip_empty=True, use_crowd=True, min_dataset_size=-1):
         super(COCODetection, self).__init__(root)
         self._root = os.path.expanduser(root)
         self._transform = transform
         self._min_object_area = min_object_area
         self._skip_empty = skip_empty
         self._use_crowd = use_crowd
+        self.min_dataset_size = min_dataset_size
         if isinstance(splits, mx.base.string_types):
             splits = [splits]
         self._splits = splits
@@ -129,6 +130,11 @@ class COCODetection(VisionDataset):
 
             # iterate through the annotations
             image_ids = sorted(_coco.getImgIds())
+            if self.min_dataset_size > 0:
+                print("{}: padding from : {} to {}".format(self._splits, len(image_ids), self.min_dataset_size))
+            while (len(image_ids)) < self.min_dataset_size:
+                image_ids = image_ids + image_ids
+            image_ids = image_ids[:self.min_dataset_size]
             for entry in _coco.loadImgs(image_ids):
                 # dirname, filename = entry['coco_url'].split('/')[-2:]
                 dirname = self._splits[0].split('_')[-1]
