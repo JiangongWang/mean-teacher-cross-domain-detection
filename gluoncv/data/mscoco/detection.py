@@ -67,8 +67,8 @@ class COCODetection(VisionDataset):
             splits = [splits]
         self._splits = splits
         # to avoid trouble, we always use contiguous IDs except dealing with cocoapi
-        # self.index_map = dict(zip(type(self).CLASSES, range(self.num_class)))
         self._classes = classes.split(',')
+        self.index_map = dict(zip(self._classes, range(self.num_class)))
         self.json_id_to_contiguous = None
         self.contiguous_id_to_json = None
         self._coco = []

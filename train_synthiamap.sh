@@ -16,11 +16,10 @@ python scripts/detection/faster_rcnn/train_faster_rcnn_se.py \
 --ignore_extra 0 \
 --pretrained_base_path "./models/" \
 --train_patterns '.*dense|.*rpn|.*down(2|3|4)_conv|.*layers(2|3|4)_conv' \
---classes 'bus,car,motorcycle,person,truck' \
---train_root ./datasets/VIPER_daysunset_for_CityScapes/coco \
---val_root ./datasets/CityScapes_for_VIPER_daysunset/coco \
---target_root ./datasets/CityScapes_for_VIPER_daysunset/coco \
---min_dataset_size 3000 \
+--classes 'bicycle,bus,person,motorcycle,car,rider,trafficlight,trafficsign,truck' \
+--train_root ./datasets/Synthia_cs_for_mapillary/coco \
+--val_root ./datasets/mapillary_for_Synthia_cs/coco \
+--target_root ./datasets/mapillary_for_Synthia_cs/coco \
 --num-workers 8 \
 --gpus 0 \
 --epochs 64 \
@@ -48,7 +47,7 @@ python scripts/detection/faster_rcnn/train_faster_rcnn_se.py \
 --conf_decay_epoch 9 \
 --wd 0.0005 \
 --lr 0.0001 \
---save-prefix outputs/models-vipercs/ \
+--save-prefix outputs/models-synthiamap/ \
 --similarity_mask_with_equal_label 1 \
 --distance_based_inside_graph 1 \
 --continue_conf_thres 1 \
